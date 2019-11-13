@@ -19,4 +19,4 @@ fo
 
 [junegunn](https://github.com/junegunn) and [sharkdp](https://github.com/sharkdp)
 
-<img src="https://github.com/Vui-Chee/FO/blob/master/FO-demo.gif" height=400 width=800/>
+<img src="https://github.com/Vui-Chee/FO/blob/master/FO-demo.gif" height=250 width=800/>
