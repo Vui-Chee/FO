@@ -15,10 +15,10 @@ function fo() {
     [ ! -x "$(which bat)" ] && brew install bat
 
     local out filepath key input
-    input='fd . -H '
+    input="fd . $HOME -H "
     IFS=$'\n' 
     out=($(eval $input | fzf --preview-window down:10 --preview='[[ $(file --mime {}) =~ binary ]] && echo {} is a binary file || (bat --style=numbers --color=always {} || cat{}) 2> /dev/null | head -200' --exit-0))
-    filepath="$(pwd)/$(head -2 <<< "$out" | tail -1)"
+    filepath="$(head -2 <<< "$out" | tail -1)"
 
     # Enter directory
     if [ -d "$filepath" ];then
@@ -28,7 +28,6 @@ function fo() {
 
     # All else must be a file to continue.
     if [ ! -f "$filepath" ];then
-      echo "$filepath is not a file."
       return
     fi
 
