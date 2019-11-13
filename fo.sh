@@ -14,11 +14,12 @@ function fo() {
     # Install bat
     [ ! -x "$(which bat)" ] && brew install bat
 
-    local out filepath key input
+    local out filepath input ext
     input="fd . $HOME -H "
     IFS=$'\n' 
     out=($(eval $input | fzf --preview-window down:10 --preview='[[ $(file --mime {}) =~ binary ]] && echo {} is a binary file || (bat --style=numbers --color=always {} || cat{}) 2> /dev/null | head -200' --exit-0))
     filepath="$(head -2 <<< "$out" | tail -1)"
+    ext="${filepath##*.}"
 
     # Enter directory
     if [ -d "$filepath" ];then
@@ -34,7 +35,8 @@ function fo() {
     if [[ $(file -b "$filepath") =~ (JPEG|PDF|PNG|JPEG|GIF) ]];then
         open "$filepath"
     else
-      if [ -x "$filepath" ];then
+      # Exclude all executables except .sh or .zsh files for now.
+      if [ -x "$filepath" ] && ([ $ext != "sh" ] && [ $ext != "zsh" ]);then
         echo "$filepath is an executable."
         return
       fi
