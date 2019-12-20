@@ -14,6 +14,29 @@ function fo() {
     # Install bat
     [ ! -x "$(which bat)" ] && brew install bat
 
+    local editor='vim'
+    if [ "$(command -v $FO_SET_EDITOR)" = "" ]; then
+      # Asks user to use default editor.
+      printf "Use default editor? [y/n]: " 
+      read use_default
+      if [[ ! ${use_default} =~ ^[y,n]$ ]];then
+        echo 'Only y/n is allowed. Using default editor.'
+        use_default='y'
+      fi
+
+      if [[ "$use_default" == "n" ]];then
+        printf "Enter your editor (if not valid, default will be used): " 
+        read editor
+        if [ "$(command -v $editor)" = "" ];then
+          editor='vim'
+          echo "No such editor, using default $editor instead."
+        fi
+      fi
+
+      export FO_SET_EDITOR="$editor"
+      export EDITOR="$FO_SET_EDITOR"
+    fi
+
     local out filepath input ext
     input="fd . $HOME -H "
     IFS=$'\n' 
@@ -40,7 +63,9 @@ function fo() {
         echo "$filepath is an executable."
         return
       fi
-      # Use your favourite editor. (In my case, it's Neovim)
-      ${EDITOR:-nvim} "$filepath"
+      ${EDITOR:-vim} "$filepath"
     fi
 }
+
+# First time sourcing this file remove existing env var.
+unset FO_SET_EDITOR
